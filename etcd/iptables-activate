@@ -2,6 +2,7 @@ iptables -t nat -A PREROUTING -d 169.254.169.255/32 -p tcp -m tcp -j DNAT --to-d
 
 #
 # use below script to activate for CoreOS
+
 cat > /etc/systemd/system/etcd-iptables.service <<EOF
 [Unit]
 Description=etcd for docker container
@@ -11,17 +12,17 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStartPre=/bin/bash -c 'iptables-save | grep -v "etcd" | iptables-restore'
-ExecStart=/usr/sbin/iptables -t nat -A PREROUTING -d 169.254.169.255/32 -m comment --comment "etcd" -p tcp -j DNAT \
---to-destination \$(/usr/bin/ifconfig docker0 | /usr/bin/grep 'inet ' | /usr/bin/awk '{ print $2}')
+#ExecPreStart=/bin/bash -c 'iptables-save > /tmp/ipt'
+#ExecPreStart=/bin/bash -c 'whoami > /tmp/w'
+ExecStart=/bin/bash -c 'iptables -t nat -A PREROUTING -d 169.254.169.255/32 -m comment --comment "etcd" -p tcp -j DNAT --to-destination \$(ifconfig docker0 | grep "inet " | awk "{ print \\\$2}")'
 ExecStop=/bin/bash -c 'iptables-save | grep -v "etcd" | iptables-restore'
 
 [Install]
 WantedBy=multi-user.target
 EOF
-
 systemctl enable /etc/systemd/system/etcd-iptables.service
 systemctl start etcd-iptables.service
 systemctl daemon-reload
 systemctl start etcd-iptables.service
+systemctl stop etcd-iptables.service
 systemctl status etcd-iptables.service
