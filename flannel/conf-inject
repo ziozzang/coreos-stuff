@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 while [ ! -f "/run/flannel/subnet.env" ] ; do sleep 0.1; done
-while [ ! -f "/etc/network-environmentenv" ] ; do sleep 0.1; done
+while [ ! -f "/etc/network-environment" ] ; do sleep 0.1; done
 
 source /etc/network-environment
 source /run/flannel/subnet.env
