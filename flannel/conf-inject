@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+source /etc/network-environment
+source /run/flannel/subnet.env
+
+cat > /run/docker.ops << EOF
+DOCKER_OPT_BIP=--bip=${FLANNEL_SUBNET}
+DOCKER_OPT_MTU=--mtu=${FLANNEL_MTU}
+DOCKER_OPTS="--insecure-registry=10.1.1.11:5000 --registry-mirror=http://${DEFAULT_IPV4}:5000"
+EOF
