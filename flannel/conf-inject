@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 INTERNAL_REGISTRY=${INTERNAL_REGISTRY:-"10.1.1.11:5000"}
+MIRROR_ADDR=${MIRROR_ADDR:-"10.1.1.70:5000"}
 
 while [ ! -f "/run/flannel/subnet.env" ] ; do sleep 0.1; done
 while [ ! -f "/etc/network-environment" ] ; do sleep 0.1; done
@@ -11,5 +12,5 @@ source /run/flannel/subnet.env
 cat > /run/docker.ops << EOF
 DOCKER_OPT_BIP=--bip=${FLANNEL_SUBNET}
 DOCKER_OPT_MTU=--mtu=${FLANNEL_MTU}
-DOCKER_OPTS="--insecure-registry=${INTERNAL_REGISTRY} --registry-mirror=http://${DEFAULT_IPV4}:5000"
+DOCKER_OPTS="--insecure-registry=${INTERNAL_REGISTRY} --registry-mirror=http://${MIRROR_ADDR}"
 EOF
