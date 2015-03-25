@@ -1,2 +1,4 @@
 #!/bin/bash
+iptables-save | grep "IPFW_" > /tmp/ips
+
 iptables-save | grep -v "IPFW_" | iptables-restore
