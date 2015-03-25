@@ -1,4 +1,11 @@
 #!/bin/bash
-iptables-save | grep "IPFW_" > /tmp/ips
+ETH=$(route -n | grep "^0.0.0.0" | tr ' ' '\n' | tail -1)
+
+IPS=`iptables-save | grep "IPFW_" | grep -o '".*"' | grep -o "[\.0-9]*"`
+# get full IP Addr
+echo "${IPS}" | while read line ; do
+  IPV=`ip addr | grep -o "${line}/[0-9]*"`
+  ip addr del ${IPV} dev ${ETH}
+done
 
 iptables-save | grep -v "IPFW_" | iptables-restore
