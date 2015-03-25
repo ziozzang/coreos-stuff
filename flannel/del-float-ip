@@ -55,12 +55,6 @@ if [ -z "${Array[1]}" ]
 fi
 
 ETH=$(route -n | grep "^0.0.0.0" | tr ' ' '\n' | tail -1)
-PIP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${CID})
 
-if [ -z "${PIP}" ]; then
-    echo "Acqusition of docker container's IP is failed."
-    exit 1
-fi
-
-ip addr del ${IPS} dev ${ETH}
+ip addr del ${Array[0]}/${Array[1]} dev ${ETH}
 iptables-save | grep -v "IPFW_${Array[0]}" | iptables-restore
