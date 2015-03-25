@@ -1,0 +1,12 @@
+#!/usr/bin/bash
+
+INTERNAL_REGISTRY=${INTERNAL_REGISTRY:-"10.1.1.11:5000"}
+MIRROR_ADDR=${MIRROR_ADDR:-"10.1.1.70:5000"}
+
+while [ ! -f "/etc/network-environment" ] ; do sleep 0.1; done
+
+source /etc/network-environment
+
+cat > /run/docker.ops << EOF
+DOCKER_OPTS="--insecure-registry=${INTERNAL_REGISTRY} --registry-mirror=http://${MIRROR_ADDR}"
+EOF
