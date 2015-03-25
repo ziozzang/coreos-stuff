@@ -66,5 +66,5 @@ else
   exit 1
 fi
 
-ip addr add ${IPS} dev ${ETH}
+ip addr add ${Array[0]}/${Array[1]} dev ${ETH}
 iptables -t nat -A PREROUTING -d ${Array[0]}/32 -p tcp -m comment --comment IPFW_${Array[0]} -j DNAT --to-destination ${PIP}
