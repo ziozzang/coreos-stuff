@@ -58,9 +58,12 @@ fi
 ETH=$(route -n | grep "^0.0.0.0" | tr ' ' '\n' | tail -1)
 PIP=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${CID})
 
-if [ -z "${PIP}" ]; then
-    echo "Acqusition of docker container's IP is failed."
-    exit 1
+if valid_ip "${PIP}"; then
+  true
+else
+  echo "Acqusition of docker container's IP is failed."
+  echo "Check Docker Container IP/Name"
+  exit 1
 fi
 
 ip addr add ${IPS} dev ${ETH}
